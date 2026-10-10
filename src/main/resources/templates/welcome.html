@@ -4,11 +4,70 @@
 
 <body>
 
-  <h2 th:text="#{welcome}">Welcome</h2>
-  <div class="row">
-    <div class="col-md-12">
-      <img class="img-responsive" src="../static/resources/images/pets.png" th:src="@{/resources/images/pets.png}" />
+  <!-- Hero section -->
+  <div class="welcome-hero">
+    <h1 class="welcome-hero-title">
+      <i class="fa fa-paw" aria-hidden="true" style="margin-right:0.5rem;opacity:0.85;"></i>
+      Welcome to Vetora
+    </h1>
+    <p class="welcome-hero-subtitle">
+      A modern, professional platform for managing your veterinary clinic — owners, pets, visits, and veterinarians in one place.
+    </p>
+    <div class="welcome-hero-actions">
+      <a th:href="@{/owners/find}" class="btn btn-hero-primary" id="btn-find-owners">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        Find Owners
+      </a>
+      <a th:href="@{/owners/new}" class="btn btn-hero-secondary" id="btn-add-owner">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add New Owner
+      </a>
+      <a th:href="@{/vets.html}" class="btn btn-hero-secondary" id="btn-view-vets">
+        <i class="fa fa-stethoscope" aria-hidden="true"></i>
+        View Veterinarians
+      </a>
     </div>
+  </div>
+
+  <!-- Feature cards -->
+  <h2 style="font-size:var(--text-lg);font-weight:var(--fw-semibold);color:var(--clr-text-primary);margin:0 0 var(--sp-5) 0;">
+    What you can do
+  </h2>
+  <div class="feature-grid">
+
+    <a th:href="@{/owners/find}" class="feature-card" id="feature-owners">
+      <div class="feature-card-icon">
+        <i class="fa fa-users" aria-hidden="true"></i>
+      </div>
+      <div>
+        <p class="feature-card-title">Manage Owners</p>
+        <p class="feature-card-desc">Search, view, add, and edit pet owner records including contact details and associated pets.</p>
+      </div>
+      <span class="feature-card-arrow"><i class="fa fa-arrow-right" aria-hidden="true"></i></span>
+    </a>
+
+    <a th:href="@{/owners/new}" class="feature-card" id="feature-add-owner">
+      <div class="feature-card-icon">
+        <i class="fa fa-user-plus" aria-hidden="true"></i>
+      </div>
+      <div>
+        <p class="feature-card-title">Register Owner &amp; Pet</p>
+        <p class="feature-card-desc">Add a new owner to the system and register their pets with birth date and type information.</p>
+      </div>
+      <span class="feature-card-arrow"><i class="fa fa-arrow-right" aria-hidden="true"></i></span>
+    </a>
+
+    <a th:href="@{/vets.html}" class="feature-card" id="feature-vets">
+      <div class="feature-card-icon">
+        <i class="fa fa-stethoscope" aria-hidden="true"></i>
+      </div>
+      <div>
+        <p class="feature-card-title">Veterinarian Directory</p>
+        <p class="feature-card-desc">Browse the full list of veterinarians and their medical specialties available at the clinic.</p>
+      </div>
+      <span class="feature-card-arrow"><i class="fa fa-arrow-right" aria-hidden="true"></i></span>
+    </a>
+
   </div>
 
 </body>

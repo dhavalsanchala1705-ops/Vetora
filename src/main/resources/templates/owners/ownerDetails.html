@@ -4,90 +4,203 @@
 
 <body>
 
-  <h2 th:text="#{ownerInformation}">Owner Information</h2>
-
-  <div th:if="${message}" class="alert alert-success" id="success-message">
+  <!-- Flash Messages -->
+  <div th:if="${message}" class="alert alert-success" id="success-message" role="alert">
+    <i class="fa fa-check-circle" aria-hidden="true" style="flex-shrink:0;font-size:var(--text-lg);"></i>
     <span th:text="${message}"></span>
   </div>
-
-  <div th:if="${error}" class="alert alert-danger" id="error-message">
+  <div th:if="${error}" class="alert alert-danger" id="error-message" role="alert">
+    <i class="fa fa-exclamation-circle" aria-hidden="true" style="flex-shrink:0;font-size:var(--text-lg);"></i>
     <span th:text="${error}"></span>
   </div>
 
-  <table class="table table-striped" th:object="${owner}">
-    <tr>
-      <th th:text="#{name}">Name</th>
-      <td><b th:text="*{firstName + ' ' + lastName}"></b></td>
-    </tr>
-    <tr>
-      <th th:text="#{address}">Address</th>
-      <td th:text="*{address}"></td>
-    </tr>
-    <tr>
-      <th th:text="#{city}">City</th>
-      <td th:text="*{city}"></td>
-    </tr>
-    <tr>
-      <th th:text="#{telephone}">Telephone</th>
-      <td th:text="*{telephone}"></td>
-    </tr>
-  </table>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-4);">
+      <div>
+        <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+          <a th:href="@{/owners/find}" style="font-size:var(--text-sm);color:var(--clr-text-secondary);">
+            <i class="fa fa-users" aria-hidden="true" style="margin-right:var(--sp-1);"></i>Owners
+          </a>
+          <span style="color:var(--clr-text-muted);font-size:var(--text-sm);">/</span>
+          <span style="font-size:var(--text-sm);color:var(--clr-text-primary);"
+                th:text="${owner.firstName + ' ' + owner.lastName}">Owner</span>
+        </div>
+        <h1 class="page-title" th:text="#{ownerInformation}">Owner Information</h1>
+      </div>
+      <div style="display:flex;gap:var(--sp-3);">
+        <a th:href="@{__${owner.id}__/edit}" class="btn btn-secondary" id="btn-edit-owner">
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+          <span th:text="#{editOwner}">Edit Owner</span>
+        </a>
+        <a th:href="@{__${owner.id}__/pets/new}" class="btn btn-primary" id="btn-add-pet">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+          <span th:text="#{addNewPet}">Add New Pet</span>
+        </a>
+      </div>
+    </div>
+  </div>
 
-  <a th:href="@{__${owner.id}__/edit}" class="btn btn-primary" th:text="#{editOwner}">Edit
-    Owner</a>
-  <a th:href="@{__${owner.id}__/pets/new}" class="btn btn-primary" th:text="#{addNewPet}">Add
-    New Pet</a>
+  <!-- Owner Info Card -->
+  <div class="card" style="margin-bottom:var(--sp-6);">
+    <div class="card-header">
+      <h2 class="card-title">
+        <i class="fa fa-user-circle" aria-hidden="true"
+           style="color:var(--clr-primary-600);margin-right:var(--sp-2);"></i>
+        Contact Details
+      </h2>
+    </div>
+    <div class="card-body">
+      <div class="owner-info-grid" th:object="${owner}">
+        <div class="owner-info-item">
+          <span class="owner-info-label"><i class="fa fa-user" aria-hidden="true" style="margin-right:var(--sp-1);"></i>Full Name</span>
+          <span class="owner-info-value" th:text="*{firstName + ' ' + lastName}"></span>
+        </div>
+        <div class="owner-info-item">
+          <span class="owner-info-label"><i class="fa fa-map-marker" aria-hidden="true" style="margin-right:var(--sp-1);"></i><span th:text="#{address}">Address</span></span>
+          <span class="owner-info-value" th:text="*{address}"></span>
+        </div>
+        <div class="owner-info-item">
+          <span class="owner-info-label"><i class="fa fa-building" aria-hidden="true" style="margin-right:var(--sp-1);"></i><span th:text="#{city}">City</span></span>
+          <span class="owner-info-value" th:text="*{city}"></span>
+        </div>
+        <div class="owner-info-item">
+          <span class="owner-info-label"><i class="fa fa-phone" aria-hidden="true" style="margin-right:var(--sp-1);"></i><span th:text="#{telephone}">Telephone</span></span>
+          <span class="owner-info-value" th:text="*{telephone}"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <br />
-  <br />
-  <br />
-  <h2 th:text="#{petsAndVisits}">Pets and Visits</h2>
+  <!-- Pets & Visits Section -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-4);">
+    <h2 style="font-size:var(--text-xl);font-weight:var(--fw-semibold);color:var(--clr-text-primary);margin:0;"
+        th:text="#{petsAndVisits}">Pets and Visits</h2>
+    <a th:href="@{__${owner.id}__/pets/new}" class="btn btn-ghost btn-sm" id="btn-add-pet-section">
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      Add Pet
+    </a>
+  </div>
 
-  <table class="table table-striped">
+  <!-- Pet Cards -->
+  <div th:if="${owner.pets.isEmpty()}" class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon"><i class="fa fa-paw" aria-hidden="true"></i></div>
+      <p class="empty-state-title">No pets registered</p>
+      <p class="empty-state-text">Add a pet for this owner to start tracking visits.</p>
+      <a th:href="@{__${owner.id}__/pets/new}" class="btn btn-primary" id="btn-empty-add-pet">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add Pet
+      </a>
+    </div>
+  </div>
 
-    <tr th:each="pet : ${owner.pets}">
-      <td valign="top">
-        <dl class="dl-horizontal">
-          <dt th:text="#{name}">Name</dt>
-          <dd th:text="${pet.name}"></dd>
-          <dt th:text="#{birthDate}">Birth Date</dt>
-          <dd th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}"></dd>
-          <dt th:text="#{type}">Type</dt>
-          <dd th:text="${pet.type}"></dd>
-        </dl>
-      </td>
-      <td valign="top">
-        <table class="table-condensed">
+  <div th:each="pet : ${owner.pets}" class="pet-card">
+
+    <!-- Pet header -->
+    <div class="pet-card-header">
+      <div style="display:flex;align-items:center;gap:var(--sp-3);">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--clr-primary-100),var(--clr-primary-50));
+             border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;
+             color:var(--clr-primary-600);font-size:var(--text-lg);" aria-hidden="true">
+          <i class="fa fa-paw"></i>
+        </div>
+        <div>
+          <p style="font-size:var(--text-base);font-weight:var(--fw-semibold);color:var(--clr-text-primary);margin:0;"
+             th:text="${pet.name}">Pet Name</p>
+          <p style="font-size:var(--text-xs);color:var(--clr-text-secondary);margin:0;">
+            <span th:text="${pet.type}">Type</span>
+          </p>
+        </div>
+      </div>
+      <div class="pet-card-actions">
+        <a th:href="@{__${owner.id}__/pets/__${pet.id}__/edit}" class="btn btn-secondary btn-sm"
+           th:aria-label="'Edit ' + ${pet.name}">
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+          <span th:text="#{editPet}">Edit Pet</span>
+        </a>
+        <a th:href="@{__${owner.id}__/pets/__${pet.id}__/visits/new}" class="btn btn-primary btn-sm"
+           th:aria-label="'Add visit for ' + ${pet.name}">
+          <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
+          <span th:text="#{addVisit}">Add Visit</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Pet metadata -->
+    <div class="pet-card-meta">
+      <div class="pet-meta-item">
+        <span class="pet-meta-label"><span th:text="#{birthDate}">Birth Date</span></span>
+        <span class="pet-meta-value" th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}"></span>
+      </div>
+      <div class="pet-meta-item">
+        <span class="pet-meta-label"><span th:text="#{type}">Type</span></span>
+        <span class="pet-meta-value">
+          <span class="badge badge-primary" th:text="${pet.type}"></span>
+        </span>
+      </div>
+      <div class="pet-meta-item">
+        <span class="pet-meta-label">Visits</span>
+        <span class="pet-meta-value" th:text="${#lists.size(pet.visits)}">0</span>
+      </div>
+    </div>
+
+    <!-- Visit history -->
+    <div class="pet-card-body" th:if="${!pet.visits.isEmpty()}">
+      <p style="font-size:var(--text-xs);font-weight:var(--fw-semibold);color:var(--clr-text-secondary);
+                text-transform:uppercase;letter-spacing:0.05em;margin:0 0 var(--sp-2) 0;">
+        Visit History
+      </p>
+      <div class="table-container">
+        <table class="table table-condensed" style="margin:0;">
           <thead>
             <tr>
               <th th:text="#{visitDate}">Visit Date</th>
               <th th:text="#{description}">Description</th>
             </tr>
           </thead>
-          <tr th:each="visit : ${pet.visits}">
-            <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
-            <td th:text="${visit?.description}"></td>
-          </tr>
-          <tr>
-            <td><a th:href="@{__${owner.id}__/pets/__${pet.id}__/edit}" th:text="#{editPet}">Edit Pet</a></td>
-            <td><a th:href="@{__${owner.id}__/pets/__${pet.id}__/visits/new}" th:text="#{addVisit}">Add Visit</a></td>
-          </tr>
+          <tbody>
+            <tr th:each="visit : ${pet.visits}">
+              <td style="white-space:nowrap;">
+                <span style="display:inline-flex;align-items:center;gap:var(--sp-1);color:var(--clr-text-secondary);">
+                  <i class="fa fa-calendar" aria-hidden="true" style="font-size:var(--text-xs);"></i>
+                  <span th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></span>
+                </span>
+              </td>
+              <td th:text="${visit?.description}"></td>
+            </tr>
+          </tbody>
         </table>
-      </td>
-    </tr>
+      </div>
+    </div>
 
-  </table>
+    <div class="pet-card-body" th:if="${pet.visits.isEmpty()}"
+         style="padding-top:0;">
+      <p style="font-size:var(--text-sm);color:var(--clr-text-muted);font-style:italic;margin:0;">
+        No visits recorded yet.
+        <a th:href="@{__${owner.id}__/pets/__${pet.id}__/visits/new}" style="margin-left:var(--sp-2);">
+          Schedule a visit
+        </a>
+      </p>
+    </div>
+
+  </div>
+  <!-- End pet cards -->
+
   <script>
-    // Function to hide the success and error messages after 3 seconds
-    function hideMessages() {
-      setTimeout(function () {
-        document.getElementById("success-message").style.display = "none";
-        document.getElementById("error-message").style.display = "none";
-      }, 3000); // 3000 milliseconds (3 seconds)
-    }
-
-    // Call the function to hide messages
-    hideMessages();
+    /* Auto-hide flash messages */
+    (function () {
+      ['success-message', 'error-message'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) {
+          setTimeout(function () {
+            el.style.transition = 'opacity 0.4s ease';
+            el.style.opacity = '0';
+            setTimeout(function () { el.style.display = 'none'; }, 400);
+          }, 4000);
+        }
+      });
+    })();
   </script>
 
 </body>

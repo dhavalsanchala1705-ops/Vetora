@@ -8,80 +8,181 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Vetora – Modern Veterinary Clinic Management Platform">
   <link rel="shortcut icon" type="image/x-icon" th:href="@{/resources/images/favicon.png}">
-  <title th:text="#{layoutTitle}">PetClinic :: a Spring Framework demonstration</title>
+  <title>Vetora – Veterinary Clinic Management</title>
   <link th:href="@{/webjars/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/resources/css/petclinic.css}" />
+  <link rel="stylesheet" th:href="@{/resources/css/vetora.css}" />
 
 </head>
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark" role="navigation">
-    <div class="container-fluid">
-      <a class="navbar-brand" th:href="@{/}"><span></span></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navbar">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="main-navbar" style>
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0" th:remove="all">
+  <!-- Application Shell -->
+  <div class="vetora-shell">
 
-          <li th:fragment="menuItem (link,active,title,glyph,text)" th:class="nav-item">
-            <a th:class="${active==menu ? 'nav-link active' : 'nav-link'}" th:href="@{__${link}__}" th:title="${title}">
-              <span th:class="'fa fa-'+${glyph}" class="fa fa-home"></span>
-              <span th:text="${text}">Template</span>
-            </a>
-          </li>
+    <!-- ── Sidebar ─────────────────────────────────────────── -->
+    <aside class="vetora-sidebar" id="vetora-sidebar" role="navigation" aria-label="Main navigation">
 
-        </ul>
-
-        <ul class="nav navbar-nav me-auto">
-
-          <li th:replace="~{::menuItem ('/','home','home page','home',#{home})}">
-            <span class="fa fa-home" aria-hidden="true"></span>
-            <span th:text="#{home}">Home</span>
-          </li>
-
-          <li th:replace="~{::menuItem ('/owners/find','owners','find owners','search',#{findOwners})}">
-            <span class="fa fa-search" aria-hidden="true"></span>
-            <span th:text="#{findOwners}">Find owners</span>
-          </li>
-
-          <li th:replace="~{::menuItem ('/vets.html','vets','veterinarians','th-list',#{vets})}">
-            <span class="fa fa-th-list" aria-hidden="true"></span>
-            <span th:text="#{vets}">Veterinarians</span>
-          </li>
-
-          <li
-            th:replace="~{::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','exclamation-triangle',#{error})}">
-            <span class="fa exclamation-triangle" aria-hidden="true"></span>
-            <span th:text="#{error}">Error</span>
-          </li>
-
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <div class="container-fluid">
-    <div class="container xd-container">
-
-      <th:block th:insert="${template}" />
-
-      <br />
-      <br />
-      <div class="container">
-        <div class="row">
-          <div class="col-12 text-center">
-            <img src="../static/images/spring-logo.svg" th:src="@{/resources/images/spring-logo.svg}"
-              alt="VMware Tanzu Logo" class="logo">
-          </div>
+      <!-- Brand -->
+      <a class="vetora-brand" th:href="@{/}" aria-label="Vetora Home">
+        <div class="vetora-brand-icon" aria-hidden="true">
+          <i class="fa fa-paw"></i>
         </div>
+        <div class="vetora-brand-text">
+          <span class="vetora-brand-name">Vetora</span>
+          <span class="vetora-brand-tagline">Clinic Management</span>
+        </div>
+      </a>
+
+      <!-- Navigation items -->
+      <ul class="vetora-nav" role="list">
+
+        <!-- Main section -->
+        <li class="vetora-nav-section-label">Main</li>
+
+        <!-- Home -->
+        <li class="vetora-nav-item">
+          <a th:href="@{/}"
+             th:class="${'home' == menu ? 'vetora-nav-link active' : 'vetora-nav-link'}"
+             title="Home">
+            <span class="nav-icon" aria-hidden="true"><i class="fa fa-home"></i></span>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <!-- Clinic section -->
+        <li class="vetora-nav-section-label">Clinic</li>
+
+        <!-- Owners / Find Owners -->
+        <li class="vetora-nav-item">
+          <a th:href="@{/owners/find}"
+             th:class="${'owners' == menu ? 'vetora-nav-link active' : 'vetora-nav-link'}"
+             title="Find Owners">
+            <span class="nav-icon" aria-hidden="true"><i class="fa fa-users"></i></span>
+            <span>Owners</span>
+          </a>
+        </li>
+
+        <!-- Veterinarians -->
+        <li class="vetora-nav-item">
+          <a th:href="@{/vets.html}"
+             th:class="${'vets' == menu ? 'vetora-nav-link active' : 'vetora-nav-link'}"
+             title="Veterinarians">
+            <span class="nav-icon" aria-hidden="true"><i class="fa fa-stethoscope"></i></span>
+            <span>Veterinarians</span>
+          </a>
+        </li>
+
+        <!-- System section -->
+        <li class="vetora-nav-section-label">System</li>
+
+        <!-- Error / Oups -->
+        <li class="vetora-nav-item">
+          <a th:href="@{/oups}"
+             th:class="${'error' == menu ? 'vetora-nav-link active' : 'vetora-nav-link'}"
+             title="Trigger Error">
+            <span class="nav-icon" aria-hidden="true"><i class="fa fa-exclamation-triangle"></i></span>
+            <span>Error Demo</span>
+          </a>
+        </li>
+
+      </ul>
+
+      <!-- Sidebar Footer -->
+      <div class="vetora-sidebar-footer">
+        <p class="vetora-sidebar-footer-text">Vetora &copy; 2025</p>
       </div>
+
+    </aside>
+    <!-- ── End Sidebar ──────────────────────────────────────── -->
+
+    <!-- ── Main Content ─────────────────────────────────────── -->
+    <div class="vetora-main">
+
+      <!-- Top Bar -->
+      <header class="vetora-topbar" role="banner">
+        <div class="vetora-topbar-left">
+          <!-- Mobile menu toggle -->
+          <button
+            class="vetora-menu-toggle"
+            id="menu-toggle"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="vetora-sidebar"
+            onclick="toggleSidebar()">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </button>
+          <!-- Breadcrumb -->
+          <nav class="vetora-breadcrumb" aria-label="Breadcrumb">
+            <a th:href="@{/}">Vetora</a>
+          </nav>
+        </div>
+
+        <div class="vetora-topbar-right">
+          <a th:href="@{/owners/new}" class="btn btn-primary btn-sm" aria-label="Add new owner">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            <span>Add Owner</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="vetora-content" id="main-content" role="main">
+
+        <th:block th:insert="${template}" />
+
+      </main>
+
     </div>
+    <!-- ── End Main Content ─────────────────────────────────── -->
+
   </div>
+  <!-- End vetora-shell -->
 
   <script th:src="@{/webjars/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+  <script>
+    /* Sidebar toggle for mobile */
+    function toggleSidebar() {
+      var sidebar = document.getElementById('vetora-sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+      var toggle  = document.getElementById('menu-toggle');
+      var isOpen  = sidebar.classList.contains('sidebar-open');
+
+      if (isOpen) {
+        closeSidebar();
+      } else {
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.add('overlay-visible');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function closeSidebar() {
+      var sidebar = document.getElementById('vetora-sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+      var toggle  = document.getElementById('menu-toggle');
+      sidebar.classList.remove('sidebar-open');
+      overlay.classList.remove('overlay-visible');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    /* Auto-hide flash alerts */
+    (function () {
+      var alerts = document.querySelectorAll('.alert-success, .alert-dismissible');
+      alerts.forEach(function (el) {
+        setTimeout(function () {
+          el.style.transition = 'opacity 0.4s ease';
+          el.style.opacity = '0';
+          setTimeout(function () { el.style.display = 'none'; }, 400);
+        }, 4000);
+      });
+    })();
+  </script>
 
 </body>
 

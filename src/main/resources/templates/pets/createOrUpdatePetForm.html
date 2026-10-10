@@ -4,30 +4,128 @@
 
 <body>
 
-  <h2>
-    <th:block th:if="${pet['new']}" th:text="#{new}">New </th:block>
-    <span th:text="#{pet}">Pet</span>
-  </h2>
-  <form th:object="${pet}" class="form-horizontal" method="post">
-    <input type="hidden" name="id" th:value="*{id}" />
-    <div class="form-group has-feedback">
-      <div class="form-group">
-        <label class="col-sm-2 control-label" th:text="#{owner}">Owner</label>
-        <div class="col-sm-10">
-          <span th:text="${owner?.firstName + ' ' + owner?.lastName}" />
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+        <a th:href="@{/owners/find}" style="font-size:var(--text-sm);color:var(--clr-text-secondary);">
+          <i class="fa fa-users" aria-hidden="true" style="margin-right:var(--sp-1);"></i>Owners
+        </a>
+        <span style="color:var(--clr-text-muted);font-size:var(--text-sm);">/</span>
+        <span style="font-size:var(--text-sm);color:var(--clr-primary-600);"
+              th:text="${owner?.firstName + ' ' + owner?.lastName}">Owner</span>
+        <span style="color:var(--clr-text-muted);font-size:var(--text-sm);">/</span>
+        <span style="font-size:var(--text-sm);color:var(--clr-text-primary);"
+              th:text="${pet['new']} ? 'New Pet' : 'Edit Pet'">Pet</span>
+      </div>
+      <h1 class="page-title">
+        <th:block th:if="${pet['new']}" th:text="#{new}">New </th:block>
+        <span th:text="#{pet}">Pet</span>
+      </h1>
+      <p class="page-subtitle"
+         th:text="${pet['new']} ? 'Register a new pet for this owner.' : 'Update pet information below.'">
+        Pet form
+      </p>
+    </div>
+  </div>
+
+  <!-- Owner summary banner -->
+  <div style="background:var(--clr-primary-50);border:1px solid var(--clr-primary-200);
+              border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-4);
+              margin-bottom:var(--sp-6);display:flex;align-items:center;gap:var(--sp-3);">
+    <i class="fa fa-user-circle" aria-hidden="true"
+       style="color:var(--clr-primary-600);font-size:var(--text-xl);"></i>
+    <div>
+      <p style="font-size:var(--text-xs);color:var(--clr-text-secondary);margin:0 0 var(--sp-1) 0;
+                text-transform:uppercase;letter-spacing:0.05em;font-weight:var(--fw-semibold);">Owner</p>
+      <p style="font-size:var(--text-sm);font-weight:var(--fw-semibold);color:var(--clr-text-primary);margin:0;"
+         th:text="${owner?.firstName + ' ' + owner?.lastName}">Owner Name</p>
+    </div>
+  </div>
+
+  <!-- Pet Form Card -->
+  <div class="card" style="max-width:600px;">
+    <div class="card-header">
+      <h2 class="card-title">
+        <i class="fa fa-paw" aria-hidden="true" style="color:var(--clr-primary-600);margin-right:var(--sp-2);"></i>
+        Pet Details
+      </h2>
+    </div>
+    <div class="card-body">
+
+      <form th:object="${pet}" class="form-horizontal" method="post" id="pet-form" novalidate>
+        <input type="hidden" name="id" th:value="*{id}" />
+
+        <!-- Name -->
+        <div th:with="valid=${!#fields.hasErrors('name')}"
+             th:class="${'form-group' + (valid ? '' : ' has-error')}">
+          <label class="col-sm-2 control-label" for="name">Name</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="text" id="name" th:field="*{name}"
+                   placeholder="e.g. Buddy" />
+            <th:block th:if="${!valid}">
+              <span class="help-inline" th:errors="*{name}"
+                    style="color:var(--clr-error);font-size:var(--text-xs);">Error</span>
+            </th:block>
+          </div>
         </div>
-      </div>
-      <input th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input ('Birth Date', 'birthDate', 'date')}" />
-      <input th:replace="~{fragments/selectField :: select ('Type', 'type', ${types})}" />
+
+        <!-- Birth Date -->
+        <div th:with="valid=${!#fields.hasErrors('birthDate')}"
+             th:class="${'form-group' + (valid ? '' : ' has-error')}">
+          <label class="col-sm-2 control-label" for="birthDate">Birth Date</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="date" id="birthDate" th:field="*{birthDate}" />
+            <th:block th:if="${!valid}">
+              <span class="help-inline" th:errors="*{birthDate}"
+                    style="color:var(--clr-error);font-size:var(--text-xs);">Error</span>
+            </th:block>
+          </div>
+        </div>
+
+        <!-- Type -->
+        <div th:with="valid=${!#fields.hasErrors('type')}"
+             th:class="${'form-group' + (valid ? '' : ' has-error')}">
+          <label class="col-sm-2 control-label" for="type">Type</label>
+          <div class="col-sm-10">
+            <select class="form-control" id="type" th:field="*{type}"
+                    style="cursor:pointer;">
+              <option th:each="item : ${types}" th:value="${item}" th:text="${item}">dog</option>
+            </select>
+            <th:block th:if="${!valid}">
+              <span class="help-inline" th:errors="*{type}"
+                    style="color:var(--clr-error);font-size:var(--text-xs);">Error</span>
+            </th:block>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="form-actions">
+              <button
+                th:with="text=${pet['new']} ? 'Add Pet' : 'Update Pet'"
+                class="btn btn-primary"
+                type="submit"
+                id="btn-submit-pet"
+                th:text="${text}">
+                Add Pet
+              </button>
+              <a th:if="${!pet['new']}"
+                 th:href="@{/owners/{ownerId}(ownerId=${owner?.id})}"
+                 class="btn btn-secondary"
+                 id="btn-cancel-pet">Cancel</a>
+              <a th:if="${pet['new']}"
+                 th:href="@{/owners/{ownerId}(ownerId=${owner?.id})}"
+                 class="btn btn-secondary"
+                 id="btn-cancel-pet-new">Cancel</a>
+            </div>
+          </div>
+        </div>
+
+      </form>
     </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button th:with="text=${pet['new']} ? 'Add Pet' : 'Update Pet'" class="btn btn-primary" type="submit"
-          th:text="${text}">Add Pet</button>
-      </div>
-    </div>
-  </form>
+  </div>
 
 </body>
 

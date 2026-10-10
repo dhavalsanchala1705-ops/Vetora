@@ -3,19 +3,48 @@
 <html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'error')}">
 
 <body>
-  <img src="../static/resources/images/pets.png" th:src="@{/resources/images/pets.png}" />
-  <!-- Title: Something happened -->
-  <h2 th:text="#{somethingHappened}">Something happened...</h2>
 
-  <!-- Status-specific error message -->
-  <p th:switch="${status}">
-    <span th:case="404" th:text="#{error.404}">The requested page was not found.</span>
-    <span th:case="500" th:text="#{error.500}">An internal server error occurred.</span>
-    <span th:case="*" th:text="#{error.general}">An unexpected error occurred.</span>
-  </p>
+  <div class="error-page-wrapper">
 
-  <!-- Exception message (for developers) -->
-  <p th:text="${message}">Exception message</p>
+    <!-- Error code graphic -->
+    <p class="error-code" aria-hidden="true">
+      <span th:text="${status}">500</span>
+    </p>
+
+    <h1 class="error-title" th:text="#{somethingHappened}">Something happened...</h1>
+
+    <p class="error-message">
+      <span th:switch="${status}">
+        <span th:case="404" th:text="#{error.404}">The requested page was not found.</span>
+        <span th:case="500" th:text="#{error.500}">An internal server error occurred.</span>
+        <span th:case="*" th:text="#{error.general}">An unexpected error occurred.</span>
+      </span>
+    </p>
+
+    <p th:if="${message}" style="font-size:var(--text-sm);color:var(--clr-text-muted);
+                                  font-family:var(--font-mono);
+                                  background:var(--clr-slate-100);
+                                  border:1px solid var(--clr-border);
+                                  border-radius:var(--radius-md);
+                                  padding:var(--sp-3) var(--sp-4);
+                                  max-width:560px;
+                                  word-break:break-all;
+                                  margin-bottom:var(--sp-6);"
+       th:text="${message}">Exception message</p>
+
+    <div style="display:flex;gap:var(--sp-3);flex-wrap:wrap;justify-content:center;">
+      <a th:href="@{/}" class="btn btn-primary" id="btn-error-home">
+        <i class="fa fa-home" aria-hidden="true"></i>
+        Go to Home
+      </a>
+      <button onclick="history.back()" class="btn btn-secondary" id="btn-error-back">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        Go Back
+      </button>
+    </div>
+
+  </div>
+
 </body>
 
 </html>

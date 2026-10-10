@@ -4,22 +4,131 @@
 
 <body>
 
-  <h2 th:text="#{owner}">Owner</h2>
-  <form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post">
-    <div class="form-group has-feedback">
-      <input th:replace="~{fragments/inputField :: input (#{firstName}, 'firstName', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input (#{lastName}, 'lastName', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input (#{address}, 'address', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input (#{city}, 'city', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input (#{telephone}, 'telephone', 'text')}" />
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button th:with="text=${owner['new']} ? #{addOwner} : #{updateOwner}" class="btn btn-primary" type="submit"
-          th:text="${text}">Add Owner</button>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <!-- Breadcrumb hint -->
+      <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+        <a th:href="@{/owners/find}" style="font-size:var(--text-sm);color:var(--clr-text-secondary);">
+          <i class="fa fa-users" aria-hidden="true" style="margin-right:var(--sp-1);"></i>Owners
+        </a>
+        <span style="color:var(--clr-text-muted);font-size:var(--text-sm);">/</span>
+        <span style="font-size:var(--text-sm);color:var(--clr-text-primary);"
+              th:text="${owner['new']} ? 'New Owner' : 'Edit Owner'">Owner</span>
       </div>
+      <h1 class="page-title"
+          th:text="${owner['new']} ? 'Add New Owner' : 'Edit Owner'">Owner</h1>
+      <p class="page-subtitle"
+         th:text="${owner['new']} ? 'Fill in the details below to register a new owner.' : 'Update the owner information below.'">
+        Owner form
+      </p>
     </div>
-  </form>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card" style="max-width:680px;">
+    <div class="card-header">
+      <h2 class="card-title">
+        <i class="fa fa-user" aria-hidden="true"
+           style="color:var(--clr-primary-600);margin-right:var(--sp-2);"></i>
+        Owner Information
+      </h2>
+    </div>
+    <div class="card-body">
+
+      <form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post" novalidate>
+
+        <!-- First Name -->
+        <div th:with="valid=${!#fields.hasErrors('firstName')}"
+             th:class="${'form-group' + (valid ? '' : ' has-error')}">
+          <label class="col-sm-2 control-label" for="firstName" th:text="#{firstName}">First Name</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="text" id="firstName" th:field="*{firstName}"
+                   placeholder="e.g. Jane" autocomplete="given-name" />
+            <th:block th:if="${!valid}">
+              <span class="help-inline" th:errors="*{firstName}"
+                    style="color:var(--clr-error);font-size:var(--text-xs);">Error</span>
+            </th:block>
+          </div>
+        </div>
+
+        <!-- Last Name -->
+        <div th:with="valid=${!#fields.hasErrors('lastName')}"
+             th:class="${'form-group' + (valid ? '' : ' has-error')}">
+          <label class="col-sm-2 control-label" for="lastName" th:text="#{lastName}">Last Name</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="text" id="lastName" th:field="*{lastName}"
+                   placeholder="e.g. Smith" autocomplete="family-name" />
+            <th:block th:if="${!valid}">
+              <span class="help-inline" th:errors="*{lastName}"
+                    style="color:var(--clr-error);font-size:var(--text-xs);">Error</span>
+            </th:block>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div th:with="valid=${!#fields.hasErrors('address')}"
+             th:class="${'form-group' + (valid ? '' : ' has-error')}">
+          <label class="col-sm-2 control-label" for="address" th:text="#{address}">Address</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="text" id="address" th:field="*{address}"
+                   placeholder="e.g. 123 Main Street" autocomplete="street-address" />
+            <th:block th:if="${!valid}">
+              <span class="help-inline" th:errors="*{address}"
+                    style="color:var(--clr-error);font-size:var(--text-xs);">Error</span>
+            </th:block>
+          </div>
+        </div>
+
+        <!-- City -->
+        <div th:with="valid=${!#fields.hasErrors('city')}"
+             th:class="${'form-group' + (valid ? '' : ' has-error')}">
+          <label class="col-sm-2 control-label" for="city" th:text="#{city}">City</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="text" id="city" th:field="*{city}"
+                   placeholder="e.g. Madison" autocomplete="address-level2" />
+            <th:block th:if="${!valid}">
+              <span class="help-inline" th:errors="*{city}"
+                    style="color:var(--clr-error);font-size:var(--text-xs);">Error</span>
+            </th:block>
+          </div>
+        </div>
+
+        <!-- Telephone -->
+        <div th:with="valid=${!#fields.hasErrors('telephone')}"
+             th:class="${'form-group' + (valid ? '' : ' has-error')}">
+          <label class="col-sm-2 control-label" for="telephone" th:text="#{telephone}">Telephone</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="text" id="telephone" th:field="*{telephone}"
+                   placeholder="e.g. 6085555187" autocomplete="tel" maxlength="10" />
+            <th:block th:if="${!valid}">
+              <span class="help-inline" th:errors="*{telephone}"
+                    style="color:var(--clr-error);font-size:var(--text-xs);">Error</span>
+            </th:block>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="form-actions">
+              <button
+                th:with="text=${owner['new']} ? #{addOwner} : #{updateOwner}"
+                class="btn btn-primary"
+                type="submit"
+                id="btn-submit-owner"
+                th:text="${text}">
+                Add Owner
+              </button>
+              <a th:href="@{/owners/find}" class="btn btn-secondary" id="btn-cancel-owner">Cancel</a>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
 </body>
 
 </html>
